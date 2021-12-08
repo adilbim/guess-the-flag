@@ -7,23 +7,33 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [answer, setAnswer] = useState(null);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    setAnswer(null);
+
+    const result = await axios('http://localhost:4000/countries');
+    const allCountries = result.data;
+
+    setCountries(allCountries);
+    setSelectedCountry(allCountries.find(e => e.selected));
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-
-      const result = await axios('http://localhost:4000/countries');
-      const allCountries = result.data;
-      console.log(allCountries);
-
-
-      setCountries(allCountries);
-      setSelectedCountry(allCountries[0]);
-      setIsLoading(false);
-    };
-
     fetchData();
   }, []);
+
+  const checkAnswer = () => {
+    if (selectedCountry.code === answer) {
+      alert('Correct!');
+    }
+    else {
+      alert('Wrong, Try again!');
+    }
+    return fetchData();
+  }
 
   return (
     <div className="relative py-16 bg-white overflow-hidden">
@@ -101,7 +111,7 @@ function App() {
               Introducing
             </span>
             <span className="mt-2 block text-3xl text-center leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              JavaScript for Beginners
+              Guess The Flag!
             </span>
           </h1>
           <br />
@@ -116,7 +126,7 @@ function App() {
                 </div>
               :
                 <img
-                  className="w-full rounded-lg"
+                  className="w-full rounded-lg border-2 border-black"
                   src={selectedCountry ? selectedCountry.flag : ''}
                   alt=""
                   width={1310}
@@ -124,13 +134,13 @@ function App() {
                 />
             }
             <br />
-            <span className="relative z-0 inline-flex shadow-sm rounded-md">
-              <input name="radio" type='hidden' value="Yes"/>
+            <span className="relative z-0 shadow-sm rounded-md flex justify-around">
               { !isLoading  ? countries.map((elm, i) => (
                 <button
-                  key={i}
+                  key={elm.code}
                   type="button"
-                  className="relative inline-flex items-center px-4 py-2 rounded border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                  onClick={() => setAnswer(elm.code)}
+                  className={(answer === elm.code ? 'bg-blue-500' : '') + ' relative inline-flex items-center px-4 py-2 rounded border border-gray-300 bg-white text-sm font-medium text-gray-700 focus:z-10 focus:outline-none'}
                 >
                  {elm.name}
                 </button>
@@ -139,6 +149,17 @@ function App() {
               }
             </span>
             </figure>
+            { answer ?
+              <div className="flex justify-center mt-5">
+                <button
+                  className="inline-flex items-center px-6 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  onClick={() => checkAnswer()}
+                >
+                  Submit
+                </button>
+              </div>
+              : ''
+            }
         </div>
       </div>
     </div>
