@@ -9,6 +9,7 @@ The project is a simple game that displays a flag along with some country names,
 
 ## Result
 
+![](https://raw.githubusercontent.com/adilbim/guess-the-flag/master/guess-the-flag.gif)
 
 
 ## Run the project
