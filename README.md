@@ -1,6 +1,5 @@
 # guess-the-flag
 
-### This project is technical test for a full stack developer position at QALQUL
 
 ## Description
 
